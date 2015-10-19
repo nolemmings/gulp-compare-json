@@ -6,34 +6,48 @@ var gutil = require('gulp-util');
 var through = require('through2');
 
 module.exports = function(options) {
-  options = options || {};
+  var failed = false;
+  var opts = options || {
+    failOnError: false,
+    output: gutil.log
+  };
+  opts.error = function(msg) {
+    if (opts.failOnError) {
+      failed = true;
+    }
+    gutil.log(msg);
+  };
 
   var filePathCache = [];
 
-  return through.obj(function (file, enc, cb) {
-
-    console.log('File.path', file.path)
-    if (file.isNull()) {
-      cb(null, file);
-      return;
-    }
-    console.log('File.path', file.path)
-    var resolvedPath = path.resolve(file.path);
-    console.log('resolvedPath', resolvedPath)
-
+  /**
+   * Cache all filenames.
+   */
+  function bufferContents(file, enc, cb) {
+    // Do not support streams
     if (file.isStream()) {
-      console.log('file is stream')
-      cb(new gutil.PluginError('gulp-compare-json', 'Streaming not supported'));
+      cb(new gutil.PluginError('gulp-compare-json',  'Streaming not supported'));
       return;
     }
+
+    var resolvedPath = path.resolve(file.path);
     filePathCache.push(resolvedPath);
     cb();
-  }, function(cb) {
+  }
+
+  /**
+   * When all filenames have been buffered, execute compare-json.
+   */
+  function endStream(cb) {
     try {
-      console.log('filePathCache', filePathCache);
-      compareJson(filePathCache, options);
+      compareJson(filePathCache, opts);
+      if (failed) {
+        cb(new Error('Comparing json files failed', {showStack: false}));
+      }
     } catch (err) {
-      cb(new gutil.PluginError('gulp-copmare-json', err, {showStack: true}));
+      cb(new gutil.PluginError('gulp-compare-json', err, {showStack: true}));
     }
-  });
+  }
+
+  return through.obj(bufferContents, endStream);
 }

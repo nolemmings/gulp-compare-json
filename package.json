@@ -1,7 +1,7 @@
 {
   "name": "gulp-compare-json",
   "version": "0.0.1",
-  "description": "Run compare-json using Gulp in Node.js",
+  "description": "Run compare-json with Gulp in Node.js",
   "author": {
     "name": "Nolemmings",
     "email": "dev@nolemmings.nl"
@@ -14,11 +14,12 @@
     "test": "gulp test"
   },
   "dependencies": {
-    "compare-json": "0.1.0",
+    "compare-json": "0.1.3",
     "gulp-util": "^3.0.6",
     "through2": "^2.0.0"
   },
   "devDependencies": {
-    "gulp": "^3.9.0"
+    "gulp": "^3.9.0",
+    "gulp-jasmine": "^2.1.0"
   }
 }
