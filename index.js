@@ -42,7 +42,7 @@ module.exports = function(options) {
     try {
       compareJson(filePathCache, opts);
       if (failed) {
-        cb(new Error('Comparing json files failed', {showStack: false}));
+        cb(new gutil.PluginError('gulp-compare-json', 'Comparing json files failed', {showStack: false}));
       }
     } catch (err) {
       cb(new gutil.PluginError('gulp-compare-json', err, {showStack: true}));
