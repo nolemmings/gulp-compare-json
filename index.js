@@ -8,9 +8,9 @@ var through = require('through2');
 module.exports = function(options) {
   var failed = false;
   var opts = options || {
-    failOnError: false,
-    output: gutil.log
+    failOnError: false
   };
+  opts.output = gutil.log
   opts.error = function(msg) {
     if (opts.failOnError) {
       failed = true;
