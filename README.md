@@ -6,7 +6,7 @@ Gulp plugin for [compare-json](https://github.com/nolemmings/compare-json).
 'use strict';
 
 var gulp = require('gulp');
-var jsonCompare = require('./');
+var jsonCompare = require('gulp-compare-json');
 
 gulp.task('default', function () {
   return gulp.src('fixture/*.json', { read: false })
