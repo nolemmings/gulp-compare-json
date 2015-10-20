@@ -4,15 +4,18 @@ var path = require('path');
 var compareJson = require('compare-json');
 var gutil = require('gulp-util');
 var through = require('through2');
+var _ = require('lodash');
 
 module.exports = function(options) {
   var failed = false;
-  var opts = options || {
+  var opts = _.defaults({}, options, {
     failOnError: false
-  };
-  opts.output = gutil.log
+  });
+
+  // We're using gulp so log output using `gutil.log`
+  opts.output = gutil.log;
   opts.error = function(msg) {
-    if (opts.failOnError) {
+    if (opts.failOnError ) {
       failed = true;
     }
     gutil.log(msg);
