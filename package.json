@@ -1,6 +1,6 @@
 {
   "name": "gulp-compare-json",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Run compare-json with Gulp in Node.js",
   "author": {
     "name": "Nolemmings",
