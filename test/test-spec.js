@@ -7,6 +7,10 @@ var compareJson = require('../');
 
 var originalLog = gutil.log;
 
+function stripColors(string) {
+  return string.replace(/\x1B[[(?);]{0,2}(;?\d)*./g, '');
+}
+
 describe('Test gulp-compare-json', function() {
 
   var out = '';
@@ -18,14 +22,35 @@ describe('Test gulp-compare-json', function() {
     }
   });
 
-  it('should compare multiple json files', function (done) {
+  it('should compare multiple json files within the same group specified by `--groupBy`', function (done) {
     gulp.src(__dirname + '/../fixture/*.json')
-      .pipe(compareJson())
+      .pipe(compareJson({
+        groupBy: 'group1',
+        ignoreUngrouped: true
+      }))
       .on('finish', function() {
+        out = stripColors(out);
         expect(out).toMatch(/test1\.json/);
-        expect(out).toMatch(/test2\.json/);
-        expect(out).toMatch(/is missing the following keys/);
-        expect(out).toMatch(/test3\.json/);
+        expect(out).toMatch(/test2\.json is missing the following keys/);
+        expect(out).toMatch(/test3\.json is complete/);
+        expect(out).not.toMatch(/test4\.json/);
+        done();
+      });
+  });
+
+  it('should compare multiple json files within the same group specified by `--separator`', function (done) {
+    gulp.src(__dirname + '/../fixture/*.json')
+      .pipe(compareJson({
+        separator: '-',
+        ignoreUngrouped: true
+      }))
+      .on('finish', function() {
+        out = stripColors(out);
+        expect(out).toMatch(/test1\.json is missing the following keys/);
+        expect(out).toMatch(/test2\.json is missing the following keys/);
+        expect(out).toMatch(/test3\.json is complete/);
+        expect(out).toMatch(/test4\.json is missing the following keys/);
+        expect(out).toMatch(/test5\.json is complete/);
         done();
       });
   });
@@ -36,8 +61,7 @@ describe('Test gulp-compare-json', function() {
         failOnError: true
       }))
       .on('error', function(err) {
-        expect(out).toMatch(/Require at least two files, found none/);
-        expect(err.message).toBe('Comparing json files failed');
+        expect(err.message).toBe('Require at least one file');
         done();
       });
   });
