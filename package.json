@@ -22,5 +22,6 @@
   "devDependencies": {
     "gulp": "^3.9.0",
     "gulp-jasmine": "^2.1.0"
-  }
+  },
+  "license": "MIT"
 }
