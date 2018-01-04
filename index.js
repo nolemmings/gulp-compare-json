@@ -2,7 +2,8 @@
 
 var path = require('path');
 var compareJson = require('compare-json');
-var gutil = require('gulp-util');
+var PluginError = require('plugin-error');
+var fancyLog = require('fancy-log');
 var through = require('through2');
 var _ = require('lodash');
 
@@ -12,13 +13,13 @@ module.exports = function(options) {
     failOnError: false
   });
 
-  // We're using gulp so log output using `gutil.log`
-  opts.output = gutil.log;
+  // We're using gulp so log output using `fancy-log`
+  opts.output = fancyLog.info;
   opts.error = function(msg) {
     if (opts.failOnError ) {
       failed = true;
     }
-    gutil.log(msg);
+    fancyLog.info(msg);
   };
 
   var filePathCache = [];
@@ -29,7 +30,7 @@ module.exports = function(options) {
   function bufferContents(file, enc, cb) {
     // Do not support streams
     if (file.isStream()) {
-      cb(new gutil.PluginError('gulp-compare-json',  'Streaming not supported'));
+      cb(new PluginError('gulp-compare-json',  'Streaming not supported'));
       return;
     }
 
@@ -45,12 +46,12 @@ module.exports = function(options) {
     try {
       compareJson(filePathCache, opts);
       if (failed) {
-        cb(new gutil.PluginError('gulp-compare-json', 'Comparing json files failed', {showStack: false}));
+        cb(new PluginError('gulp-compare-json', 'Comparing json files failed', {showStack: false}));
       } else {
         cb(null);
       }
     } catch (err) {
-      cb(new gutil.PluginError('gulp-compare-json', err, {showStack: true}));
+      cb(new PluginError('gulp-compare-json', err, {showStack: true}));
     }
   }
 

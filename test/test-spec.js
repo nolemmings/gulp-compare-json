@@ -1,11 +1,11 @@
 'use strict';
 
 var gulp = require('gulp');
-var gutil = require('gulp-util');
+var fancyLog = require('fancy-log');
 var through2 = require('through2');
 var compareJson = require('../');
 
-var originalLog = gutil.log;
+var originalLog = fancyLog.info;
 
 function stripColors(string) {
   return string.replace(/\x1B[[(?);]{0,2}(;?\d)*./g, '');
@@ -17,7 +17,7 @@ describe('Test gulp-compare-json', function() {
 
   beforeEach(function() {
     out = '';
-    gutil.log = function(str) {
+    fancyLog.info = function(str) {
       out += str + '\n';
     }
   });
